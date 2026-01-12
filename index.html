@@ -671,6 +671,17 @@ const slaugosPlanas = {
     "Skysčių/aktyvumo skatinimas pagal būklę",
     "Priemonių taikymas pagal paskyrimą"
   ],
+   "Tachikardija": [
+    "Pulsas sekamas kas 4 val.",
+    "Įvertinti galimas priežastis (skausmas, karščiavimas, hipovolemija, hipoksija, nerimas)",
+    "AKS ir SpO₂ stebėjimas",
+    "Jei pulsas >120/min ar yra simptomai (hipotenzija, galvos svaigimas, krūtinės skausmas) – informuoti gydytoją"
+  ],
+  "Bradikardija": [
+    "Pulsas sekamas kas 4 val.",
+    "AKS, sąmonės būklės ir perfuzijos stebėjimas",
+    "Jei yra simptomai arba AKS žemas – informuoti gydytoją"
+  ],
   "Viduriavimas": [
     "Stebėti tuštinimąsi",
     "Odos priežiūra tarpvietėje",
@@ -843,7 +854,18 @@ function detectProblems(f){
       pills.push(classifyPill(`T ${temp.toFixed(1)}°C`, "ok"));
     }
   }
-
+// ——— Pulsas
+if (hr != null) {
+  if (hr > 100) {
+    esamos.push("Tachikardija");
+    pills.push(classifyPill(`Pulsas ${hr}/min (tachikardija)`, "warn"));
+  } else if (hr < 50) {
+    esamos.push("Bradikardija");
+    pills.push(classifyPill(`Pulsas ${hr}/min (bradikardija)`, "warn"));
+  } else {
+    pills.push(classifyPill(`Pulsas ${hr}/min`, "ok"));
+  }
+}
   // --- Tracheostoma / sekretas / siurbimas
   if(
     f['trach'].value==='taip' ||
