@@ -202,18 +202,6 @@
       </div>
     </div>
 
-    <!-- NOSIS -->
-    <div class="section">
-      <h2>Nosis</h2>
-      <label for="nosis">Nosis
-        <select id="nosis" name="nosis">
-          <option value="nedaryta">Niekas nedaryta</option>
-          <option value="tamponuota">Tamponuota nosis</option>
-          <option value="istraukti">Ištraukti tamponai</option>
-        </select>
-      </label>
-    </div>
-
     <!-- MITYBA -->
     <div class="section">
       <h2>Mityba</h2>
@@ -470,7 +458,7 @@ function onReady(fn){ if(document.readyState!=='loading') fn(); else document.ad
 function toNum(v){ const n=parseFloat(String(v).replace(',', '.')); return Number.isFinite(n)?n:null; }
 function calcMAP(sys, dia){ if(sys==null||dia==null) return null; return Math.round(((2*dia)+sys)/3); }
 function valOrDash(v){ return (v==null||v==="")? "-" : v; }
-function escapeHtml(s){ return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;"); }
+function escapeHtml(s){ return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"quot;"); }
 function classifyPill(text, severity="ok"){ const cls=severity==="bad"?"pill bad":severity==="warn"?"pill warn":"pill ok"; return `<span class="${cls}">${escapeHtml(text)}</span>`; }
 function uniq(arr){ return [...new Set(arr)].filter(Boolean); }
 function vitalsText(spo2, sys, dia, map, hr, temp){
@@ -506,11 +494,6 @@ const slaugosPlanas = {
     "Stomos priežiūra – tvarsčio keitimas bent 2 k./parą",
     "Tracheostominio vamzdelio fiksacijos patikra"
   ],
-  "Nedidelis kraujavimas iš nosies": [
-    "AKS stebėjimas kraujavimui nestojant",
-    "Pacientas apmokintas kaip prižiūrėti nosį kraujavimui sustojus"
-  ],
-  "Tamponuota nosis": ["Nosies tvarščio keitimas"],
   "Sutrikusi kvėpavimo funkcija (dusulys)": ["SpO₂ stebėjimas","Prireikus O₂ skyrimas pagal SpO₂"],
   "Neefektyvi dujų apykaita": ["SpO₂ stebėjimas","O₂ skyrimas ir reguliavimas pagal SpO₂ duomenis"],
 
@@ -540,7 +523,7 @@ const slaugosPlanas = {
     "Zondo padėties patikra pagal įstaigos protokolą",
     "Galvūgalis ≥30–45° maitinimo metu ir 30–60 min po",
     "Zondo praplovimas prieš ir po maitinimo bei vaistų",
-    "Nosies ir odos prie zondo priežiūra, fiksacijos patikra",
+    "Odos prie zondo priežiūra, fiksacijos patikra",
     "Stebėti dėl aspiracijos, pykinimo, pilvo pūtimo"
   ],
   "Mityba per PEG": [
@@ -763,9 +746,7 @@ function detectProblems(f){
   // Tracheostoma / sekretas / siurbimas
   if(f['trach'].value==='taip' || f['sekretas_trach'].value==='taip' || f['siurbimas'].value==='taip') esamos.push("Kvėpavimo takai su tracheostominiu vamzdžiu");
 
-  // Nosis / dusulys
-  if(f['nosis'].value==='tamponuota'){ esamos.push("Tamponuota nosis"); galimos.push("Sutrikęs miegas"); }
-  else if(f['nosis'].value==='istraukti'){ esamos.push("Nedidelis kraujavimas iš nosies"); }
+  // Dusulys
   if(f['dusulys'].value==='taip') esamos.push("Sutrikusi kvėpavimo funkcija (dusulys)");
 
   // AKS
@@ -992,9 +973,11 @@ function renderOutput(f, ctx){
       if(p==="Rizika praguloms dėl lovos režimo") return;
     }
     if(addExtrasForHelpDueToDizziness && p==="Rizika griuvimui dėl galvos svaigimo") return;
+
     const key=Object.keys(slaugosPlanas).find(k=>p.startsWith(k));
     if(!key) return;
     (slaugosPlanas[key]||[]).forEach(it=>{ if(!seenPlan.has(it)){ seenPlan.add(it); planItems.push(it); } });
+
     if(p.startsWith("Padidėjęs kraujo spaudimas") && highSys30){
       const it="AKS sekimas kas 30 min."; if(!seenPlan.has(it)){ seenPlan.add(it); planItems.push(it); }
     }
@@ -1077,4 +1060,3 @@ function resetForm(){
 
 </body>
 </html>
-
